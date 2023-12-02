@@ -8,12 +8,26 @@ const Button = ({handleClick, text}) => {
   )
 }
 
-const Statistics = ({goodClicks, neutralClicks, badClicks}) => {
+const Statistics = ({goodClicks, neutralClicks, badClicks, allClicks}) => {
+
+  const weight = {
+    good: 1,
+    neutral: 0,
+    bad: -1
+  }
+
+  const averageScore = () => ((goodClicks * weight.good) + (neutralClicks * weight.neutral) + (badClicks * weight.bad)) / allClicks
+
+  const percentagePositive = () => (goodClicks / allClicks) * 100
+
   return (
     <div>
       <p>good {goodClicks}</p>
       <p>neutral {neutralClicks}</p>
       <p>bad {badClicks}</p>
+      <p>all {allClicks}</p>
+      <p>average {averageScore()}</p>
+      <p>positive {percentagePositive()} %</p>
     </div>
   )
 }
@@ -23,12 +37,25 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [allFeedback, setAllFeedback] = useState(0)
 
-  const handleGoodClick = () => setGood(good + 1)
+  const handleGoodClick = () => {
+    const updatedGood = good + 1
+    setGood(updatedGood)
+    setAllFeedback(updatedGood + neutral + bad)
+  }
 
-  const handleNeutralClick = () => setNeutral(neutral + 1)
+  const handleNeutralClick = () => {
+    const updatedNeutral = neutral + 1
+    setNeutral(updatedNeutral)
+    setAllFeedback(updatedNeutral + good + bad)
+  }
 
-  const handleBadClick = () => setBad(bad + 1)
+  const handleBadClick = () => {
+    const updatedBad = bad + 1
+    setBad(updatedBad)
+    setAllFeedback(updatedBad + neutral + good)
+  }
 
   return (
     <div>
@@ -37,7 +64,7 @@ const App = () => {
       <Button handleClick={handleNeutralClick} text='neutral' />
       <Button handleClick={handleBadClick} text='bad' />
       <h1>statistics</h1>
-      <Statistics goodClicks={good} neutralClicks={neutral} badClicks={bad}/>
+      <Statistics goodClicks={good} neutralClicks={neutral} badClicks={bad} allClicks={allFeedback}/>
     </div>
   )
 }
