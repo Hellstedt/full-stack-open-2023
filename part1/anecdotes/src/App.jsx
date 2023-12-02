@@ -21,6 +21,7 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(anecdotes.map(() => 0))
 
   const getRandomInteger = (min, max) => {
     min = Math.ceil(min)
@@ -28,13 +29,28 @@ const App = () => {
     return Math.floor(Math.random() * (max - min) + min)
   }
 
-  const handleClick = () => setSelected(getRandomInteger(0, anecdotes.length))
+  const incrementVotes = (index) => {
+    const newVotes = votes.map((element, item) => {
+      if (item === index) {
+        return element + 1
+      } else {
+        return element
+      }
+    })
+    setVotes(newVotes)
+  }
+
+  const handleNextClick = () => setSelected(getRandomInteger(0, anecdotes.length))
+  const handleVoteClick = () => incrementVotes(selected)
 
   return (
     <div>
       {anecdotes[selected]}
       <br></br>
-      <Button text='next anecdote' handleClick={handleClick}/>
+      <p>has {votes[selected]} votes</p>
+      <br></br>
+      <Button text='vote' handleClick={handleVoteClick} />
+      <Button text='next anecdote' handleClick={handleNextClick} />
     </div>
   )
 }
