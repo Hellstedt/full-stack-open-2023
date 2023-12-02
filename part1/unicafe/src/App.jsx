@@ -20,6 +20,13 @@ const Statistics = ({goodClicks, neutralClicks, badClicks, allClicks}) => {
 
   const percentagePositive = () => (goodClicks / allClicks) * 100
 
+  if (allClicks < 1) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }
   return (
     <div>
       <p>good {goodClicks}</p>
