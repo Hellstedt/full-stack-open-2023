@@ -8,6 +8,26 @@ const Button = ({text, handleClick}) => {
     )
 }
 
+const Anecdote = ({text, anecdotesArray, votesArray, arrayIndex}) => {
+  if (votesArray[arrayIndex] === 0 && text === 'Anecdote with most votes') {
+    return (
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <p>No votes has been submitted</p>
+      </div>
+    )
+  }
+  return (
+    <div>
+      <h1>{text}</h1>
+      {anecdotesArray[arrayIndex]}
+      <br></br>
+      <p>has {votesArray[arrayIndex]} votes</p>
+      <br></br>
+    </div>
+    )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -23,12 +43,14 @@ const App = () => {
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(anecdotes.map(() => 0))
 
+  //generates random integer, min iclusive max exclusive
   const getRandomInteger = (min, max) => {
     min = Math.ceil(min)
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min) + min)
   }
 
+  //Used by handleNextClick to generate a random integer, min iclusive & max exclusive, to select a random anecdote
   const incrementVotes = (index) => {
     const newVotes = votes.map((element, item) => {
       if (item === index) {
@@ -40,17 +62,29 @@ const App = () => {
     setVotes(newVotes)
   }
 
+  //Returns index of anecdote with most votes. Used by 2nd Anecdote component
+  const checkMostvotes = () => {
+    let index = 0
+    let highestVotes = 0
+    
+    for (let i = 0; i < votes.length; i++) {
+      if (votes[i] >= highestVotes) {
+        index = i
+        highestVotes = votes[i]
+      }
+    }
+    return index
+  }
+
   const handleNextClick = () => setSelected(getRandomInteger(0, anecdotes.length))
   const handleVoteClick = () => incrementVotes(selected)
 
   return (
     <div>
-      {anecdotes[selected]}
-      <br></br>
-      <p>has {votes[selected]} votes</p>
-      <br></br>
+      <Anecdote text='Anecdote of the day'  anecdotesArray={anecdotes} votesArray={votes} arrayIndex={selected} />
       <Button text='vote' handleClick={handleVoteClick} />
       <Button text='next anecdote' handleClick={handleNextClick} />
+      <Anecdote text='Anecdote with most votes' anecdotesArray={anecdotes} votesArray={votes} arrayIndex={checkMostvotes()} />
     </div>
   )
 }
